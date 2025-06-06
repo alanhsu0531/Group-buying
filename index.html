@@ -550,8 +550,12 @@
                             <input type="email" id="email" name="email">
                         </div>
                         <div class="form-group">
-                            <label for="address">地址</label>
-                            <input type="text" id="address" name="address">
+                            <label for="pickup_method">取貨方式 *</label>
+                            <select id="pickup_method" name="pickup_method" required style="padding: 12px 15px; width: 100%; border: 2px solid #e9ecef; border-radius: 10px; font-size: 1em; background: white;">
+                                <option value="" disabled selected>-- 請選擇 --</option>
+                                <option value="公司領">台北公司領</option>
+                                <option value="自取">自取</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group" style="margin-top: 20px;">
