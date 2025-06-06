@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>雞胸肉團購表單</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <style>
+        /* ... 這裡的所有 CSS 樣式都和之前一樣 ... */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -66,6 +73,24 @@
             opacity: 0.9;
             position: relative;
             z-index: 1;
+        }
+
+        .jump-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .jump-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
         }
 
         .form-container {
@@ -298,6 +323,40 @@
             z-index: 1;
         }
 
+        /* 步驟二：為輪播元件加入一些基本樣式 */
+        .swiper {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 讓輪播的導航按鈕更好看 */
+        .swiper-button-next, .swiper-button-prev {
+            color: #ff6b6b;
+        }
+
+        .swiper-pagination-bullet-active {
+            background-color: #ff6b6b;
+        }
+
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2em;
@@ -322,6 +381,7 @@
         <div class="header">
             <h1>🍗 雞胸肉團購</h1>
             <p>新鮮美味，健康首選！</p>
+            <a href="#product-image-section" class="jump-btn">看詳細資訊 👇</a>
         </div>
 
         <div class="form-container">
@@ -498,108 +558,157 @@
                     <span>確認訂購 🛒</span>
                 </button>
             </form>
+
+            <div id="product-image-section" style="padding: 40px 0; text-align: center;">
+                <h2 class="section-title" style="justify-content: center; margin-bottom: 20px;">美味實品照</h2>
+                
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="1.jpg" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="2.jpg" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="3.jpg" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="4.png" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="5.png" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="6.png" alt="商品介紹"></div>
+                        <div class="swiper-slide"><img src="7.png" alt="熱量表"></div>
+                        <div class="swiper-slide"><img src="8.png" alt="熱量表"></div>
+                        <div class="swiper-slide"><img src="9.png" alt="熱量表"></div>
+                        </div>
+                    <div class="swiper-pagination"></div>
+
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
 <script>
-        const prices = {
-            herb: 38, garlic: 38, curry: 38, italian: 38,
-            thai: 38, salt: 38, original: 38, pepper: 38,
-            blackpepper: 38, grilled: 38, wine: 38, kimchi: 38
-        };
+    const prices = {
+        herb: 38, garlic: 38, curry: 38, italian: 38,
+        thai: 38, salt: 38, original: 38, pepper: 38,
+        blackpepper: 38, grilled: 38, wine: 38, kimchi: 38
+    };
 
-        function changeQuantity(flavor, change) {
-            const input = document.getElementById(flavor);
-            const currentValue = parseInt(input.value) || 0;
-            const newValue = Math.max(0, currentValue + change);
-            input.value = newValue;
-            updateTotal();
+    function changeQuantity(flavor, change) {
+        const input = document.getElementById(flavor);
+        const currentValue = parseInt(input.value) || 0;
+        const newValue = Math.max(0, currentValue + change);
+        input.value = newValue;
+        updateTotal();
+    }
+
+    function updateTotal() {
+        let total = 0;
+        Object.keys(prices).forEach(flavor => {
+            const quantity = parseInt(document.getElementById(flavor).value) || 0;
+            total += quantity * prices[flavor];
+        });
+        document.getElementById('totalAmount').textContent = `NT$ ${total.toLocaleString()}`;
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // 防止表單傳統提交
+
+        const form = e.target;
+        const submitBtn = form.querySelector('.submit-btn');
+        const originalBtnText = submitBtn.innerHTML;
+
+        // 檢查必填欄位
+        if (!document.getElementById('name').value || !document.getElementById('phone').value) {
+            alert('請務必填寫姓名和電話！');
+            return;
         }
 
-        function updateTotal() {
-            let total = 0;
-            Object.keys(prices).forEach(flavor => {
-                const quantity = parseInt(document.getElementById(flavor).value) || 0;
-                total += quantity * prices[flavor];
-            });
-            document.getElementById('totalAmount').textContent = `NT$ ${total.toLocaleString()}`;
+        // 檢查是否有選購商品
+        let totalQuantity = 0;
+        Object.keys(prices).forEach(flavor => {
+            totalQuantity += parseInt(document.getElementById(flavor).value) || 0;
+        });
+        if (totalQuantity === 0) {
+            alert('請至少選購一項商品！');
+            return;
         }
 
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 防止表單傳統提交
+        // 禁用按鈕，顯示處理中
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>處理中...</span>`;
 
-            const form = e.target;
-            const submitBtn = form.querySelector('.submit-btn');
-            const originalBtnText = submitBtn.innerHTML;
+        const formData = new FormData(form);
+        
+        // 手動加入總金額和提交時間
+        const totalAmountValue = document.getElementById('totalAmount').textContent;
+        formData.append('totalAmount', totalAmountValue);
+        formData.append('submissionTime', new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }));
 
-            // 檢查必填欄位
-            if (!document.getElementById('name').value || !document.getElementById('phone').value) {
-                alert('請務必填寫姓名和電話！');
-                return;
-            }
-
-            // 檢查是否有選購商品
-            let totalQuantity = 0;
-            Object.keys(prices).forEach(flavor => {
-                totalQuantity += parseInt(document.getElementById(flavor).value) || 0;
-            });
-            if (totalQuantity === 0) {
-                alert('請至少選購一項商品！');
-                return;
-            }
-
-            // 禁用按鈕，顯示處理中
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span>處理中...</span>`;
-
-            const formData = new FormData(form);
-            
-            // 手動加入總金額和提交時間
-            const totalAmountValue = document.getElementById('totalAmount').textContent;
-            formData.append('totalAmount', totalAmountValue);
-            formData.append('submissionTime', new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }));
-
-            // 將數量欄位的 input name 加入 form data
-            Object.keys(prices).forEach(flavor => {
-                formData.append(flavor, document.getElementById(flavor).value);
-            });
-
-            const sheetDbUrl = 'https://sheetdb.io/api/v1/1v3jxvvrnbrew'; // <--- 請務必替換成您的 API 連結
-
-            if (sheetDbUrl.includes('在這裡貼上')) {
-                alert('程式碼尚未設定完成！請開發者填入 SheetDB 的 API 連結。');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                return;
-            }
-
-            fetch(sheetDbUrl, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.created) {
-                    alert('訂單提交成功！感謝您的訂購。');
-                    form.reset(); // 清空表單
-                    updateTotal(); // 總金額歸零
-                } else {
-                    alert('提交失敗，請稍後再試或聯繫團主。');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('發生錯誤，提交失敗！請檢查網路連線或聯繫團主。');
-            })
-            .finally(() => {
-                // 無論成功或失敗，都恢復按鈕
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            });
+        // 將數量欄位的 input name 加入 form data
+        Object.keys(prices).forEach(flavor => {
+            formData.append(flavor, document.getElementById(flavor).value);
         });
 
-        // 初始化總金額
-        updateTotal();
-    </script>
+        const sheetDbUrl = 'https://sheetdb.io/api/v1/1v3jxvvrnbrew'; // <--- 請務必替換成您的 API 連結
+
+        if (sheetDbUrl.includes('在這裡貼上')) {
+            alert('程式碼尚未設定完成！請開發者填入 SheetDB 的 API 連結。');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+            return;
+        }
+
+        fetch(sheetDbUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.created) {
+                alert('訂單提交成功！感謝您的訂購。');
+                form.reset(); // 清空表單
+                updateTotal(); // 總金額歸零
+            } else {
+                alert('提交失敗，請稍後再試或聯繫團主。');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('發生錯誤，提交失敗！請檢查網路連線或聯繫團主。');
+        })
+        .finally(() => {
+            // 無論成功或失敗，都恢復按鈕
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        });
+    });
+
+    // 初始化總金額
+    updateTotal();
+
+
+    // 步驟五：啟用 Swiper
+    const swiper = new Swiper('.swiper', {
+        // Optional parameters
+        loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+
+        // If we need pagination
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+
+        // Navigation arrows
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+
+</script>
 </body>
 </html>
